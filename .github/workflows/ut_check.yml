@@ -16,8 +16,8 @@ jobs:
 
       - name: Run tests
       # 5. Run run_tests.sh
-        run: bash .github/workflows/scripts/run_tests.sh
+        run: ./.github/workflows/scripts/run_tests.sh
 
       - name: Check coverage
       # 6. Run check_coverage.sh
-        run: bash .github/workflows/scripts/check_coverage.sh
+        run: ./.github/workflows/scripts/check_coverage.sh
