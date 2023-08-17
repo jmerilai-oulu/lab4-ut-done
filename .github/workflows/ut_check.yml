@@ -14,9 +14,9 @@ jobs:
       # 4. Install cargo-tarpaulin
         run: cargo install cargo-tarpaulin
 
-      - name: Run tests
+      # - name: Run tests
       # 5. Run run_tests.sh
-        run: ./.github/workflows/scripts/run_tests.sh
+      #  run: ./.github/workflows/scripts/run_tests.sh
 
       - name: Check coverage
       # 6. Run check_coverage.sh
