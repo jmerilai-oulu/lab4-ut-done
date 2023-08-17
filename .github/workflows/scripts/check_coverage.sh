@@ -1,27 +1,14 @@
 #!/bin/bash
+set -xeu
 
-set -e
+RUSTFLAGS="-Zinstrument-coverage" cargo test --lib
+grcov . --binary-path ./target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/ --excl-start "#\[cfg\(test\)\]" --keep-only **/src/**/*
 
-# Check coverage percentage
-#coverage_percentage=$(grep -oPm1 "(?<=line-rate=\")[^\"]*" coverage.xml)
-#coverage_percentage=$(echo "$coverage_percentage*100" | bc)
-
-#if [ $(echo "$coverage_percentage > 90" | bc -l) -eq 1 ]; then
-#  echo "Coverage is above 90%: $coverage_percentage%"
-#else
-#  echo "Coverage is below 90%: $coverage_percentage%"
-#  exit 1
-#fi
-
-cargo tarpaulin --ignore-tests --out Xml
-
-COVERAGE_THRESHOLD=85
-
-ACTUAL_COVERAGE=$(cat target/cov-report/index.html | grep -oP '(?<=<span class="strong">)[0-9]+\.[0-9]+(?=%</span>)')
-
-if (( $(bc <<< "$ACTUAL_COVERAGE >= $COVERAGE_THRESHOLD") )); then
-  echo "Coverage is above or equal to $COVERAGE_THRESHOLD%"
+coverage=$(grep -m 1 '<abbr title' coverage/index.html | grep -o "[0-9.]*" | tail -1)
+failure=$(awk 'BEGIN{ print '"$coverage"'<'"$COV_THRESHOLD"' }')
+if [ "$failure" -eq "1" ]; then
+    echo "Coverage has failed with $coverage% instead of at least $COV_THRESHOLD%."
+    exit 1
 else
-  echo "Coverage is below $COVERAGE_THRESHOLD%"
-  exit 1
+    echo "Coverage has successfully passed with $coverage%."
 fi

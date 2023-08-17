@@ -10,9 +10,9 @@ jobs:
       # 3. Checkout repository
       - uses: actions/checkout@v3
 
-      - name: Install cargo-tarpaulin
-      # 4. Install cargo-tarpaulin
-        run: cargo install cargo-tarpaulin
+      - name: Install grcov
+      # 4. Install grcov
+        run: cargo install grcov
 
       # - name: Run tests
       # 5. Run run_tests.sh
