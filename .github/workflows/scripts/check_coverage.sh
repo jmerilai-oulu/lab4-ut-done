@@ -13,7 +13,7 @@ set -e
 #  exit 1
 #fi
 
-cargo tarpaulin --ignore-tests
+cargo tarpaulin --ignore-tests --out Xml
 
 COVERAGE_THRESHOLD=85
 
