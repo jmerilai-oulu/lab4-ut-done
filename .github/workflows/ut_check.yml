@@ -1,0 +1,23 @@
+# 1. Execute on push
+on: [push]
+
+jobs:
+  ut_check:
+    # 2. Run on latest Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      # 3. Checkout repository
+      - uses: actions/checkout@v3
+
+      - name: Install cargo-tarpaulin
+      # 4. Install cargo-tarpaulin
+        run: cargo install cargo-tarpaulin
+
+      - name: Run tests
+      # 5. Run run_tests.sh
+        run: bash .github/workflows/scripts/run_tests.sh
+
+      - name: Check coverage
+      # 6. Run check_coverage.sh
+        run: bash .github/workflows/scripts/check_coverage.sh
