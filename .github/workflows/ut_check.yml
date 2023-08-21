@@ -17,18 +17,5 @@ jobs:
       - name: Run tests
         run: cargo tarpaulin
 
-      - name: Run tests with Tarpaulin and extract coverage
-        id: tarpaulin
-        run: |
-          coverage=$(cargo tarpaulin -o Html -- --quiet | grep -oP '\d+\.\d+(?=%) coverage')
-          echo "::set-output name=coverage::$coverage"
-
       - name: Check coverage percentage
-        run: |
-          coverage="${{ steps.tarpaulin.outputs.coverage }}"
-          if (( $(echo "$coverage >= 90" | bc -l) )); then
-            echo "Coverage is over 90% ($coverage), success!"
-          else
-            echo "Coverage is below 90% ($coverage), please improve test coverage."
-            exit 1
-          fi
+        run: ./.github/workflows/check-coverage.sh
