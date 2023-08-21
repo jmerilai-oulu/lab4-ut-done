@@ -1,26 +1,28 @@
-name: Rust Test Coverage
+name: Rust Test and Coverage
 
 on: [push]
 
 jobs:
-  test:
+  test-and-coverage:
     name: Test and Coverage
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run Tests and Generate Coverage Report
-        run: cargo install cargo-tarpaulin && cargo tarpaulin --all-features --ignore-tests
-
-      - name: Extract Coverage Percentage
+      - name: Run tests with Tarpaulin and extract coverage
+        id: tarpaulin
         run: |
-          COVERAGE_THRESHOLD=85
-          ACTUAL_COVERAGE=$(grep -oP "(?<=^Overall coverage rate: )[0-9.]+" target/debug/tarpaulin/cobertura/coverage.xml)
-          if (( $(bc <<< "$ACTUAL_COVERAGE >= $COVERAGE_THRESHOLD") )); then
-            echo "Coverage is above or equal to $COVERAGE_THRESHOLD%"
+          coverage=$(cargo tarpaulin -o Html -- --quiet | grep -oP 'Coverage: \K\d+\.\d+')
+          echo "::set-output name=coverage::$coverage"
+
+      - name: Check coverage percentage
+        run: |
+          coverage="${{ steps.tarpaulin.outputs.coverage }}"
+          if (( $(echo "$coverage >= 90" | bc -l) )); then
+            echo "Coverage is over 90% ($coverage), success!"
           else
-            echo "Coverage is below $COVERAGE_THRESHOLD%"
+            echo "Coverage is below 90% ($coverage), please improve test coverage."
             exit 1
           fi
