@@ -1,30 +1,34 @@
-# 1. Execute on push
+name: Rust Test Coverage
+
 on: [push]
 
 jobs:
-  ut_check:
-    # 2. Run on latest Ubuntu
+  test:
+    name: Test and Coverage
     runs-on: ubuntu-latest
 
     steps:
-      # 3. Checkout repository
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1
+      - name: Set up Rust
+        uses: actions/setup-rust@v2
         with:
-          toolchain: nightly
-          override: true
-          profile: minimal
+          rust-version: stable
 
-      - name: Install grcov
-      # 4. Install grcov
-        run: cargo install grcov
+      - name: Install dependencies
+        run: cargo fetch
 
-      # - name: Run tests
-      # 5. Run run_tests.sh
-      #  run: ./.github/workflows/scripts/run_tests.sh
+      - name: Run Tests and Generate Coverage Report
+        run: cargo install cargo-tarpaulin && cargo tarpaulin --all-features --ignore-tests
 
-      - name: Check coverage
-      # 6. Run check_coverage.sh
-        run: ./.github/workflows/scripts/check_coverage.sh
+      - name: Extract Coverage Percentage
+        run: |
+          COVERAGE_THRESHOLD=85
+          ACTUAL_COVERAGE=$(grep -oP "(?<=^Overall coverage rate: )[0-9.]+" target/debug/tarpaulin/cobertura/coverage.xml)
+          if (( $(bc <<< "$ACTUAL_COVERAGE >= $COVERAGE_THRESHOLD") )); then
+            echo "Coverage is above or equal to $COVERAGE_THRESHOLD%"
+          else
+            echo "Coverage is below $COVERAGE_THRESHOLD%"
+            exit 1
+          fi
