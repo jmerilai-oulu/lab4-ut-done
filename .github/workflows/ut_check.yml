@@ -11,6 +11,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install Tarpaulin
+        run: cargo install cargo-tarpaulin
+
       - name: Run tests with Tarpaulin and extract coverage
         id: tarpaulin
         run: |
