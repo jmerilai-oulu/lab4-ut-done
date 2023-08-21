@@ -15,7 +15,7 @@ jobs:
         run: cargo install cargo-tarpaulin
 
       - name: Run tests
-        run: cargo taarpaulin
+        run: cargo tarpaulin
 
       - name: Run tests with Tarpaulin and extract coverage
         id: tarpaulin
