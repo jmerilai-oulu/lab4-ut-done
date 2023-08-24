@@ -77,5 +77,18 @@ mod tests {
         assert_eq!(rot13_encrypt("hello world"), "uryyb jbeyq");
     }
 
+    #[test]
+    fn test_rot13_decrypt() {
+        assert_eq!(rot13_decrypt("uryyb jbeyq"), "hello world");
+    }
 
+    #[test]
+    fn test_atbash_encrypt() {
+        assert_eq!(atbash_encrypt("hello world"), "svool dliow");
+    }
+
+    #[test]
+    fn test_atbash_decrypt() {
+        assert_eq!(atbash_decrypt("svool dliow"), "hello world");
+    }
 }
