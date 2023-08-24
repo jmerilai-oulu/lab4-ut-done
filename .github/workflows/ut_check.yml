@@ -14,8 +14,5 @@ jobs:
       - name: Install Tarpaulin
         run: cargo install cargo-tarpaulin
 
-      - name: Run tests
-        run: cargo tarpaulin
-
       - name: Check coverage percentage
         run: ./.github/workflows/scripts/check_coverage.sh
